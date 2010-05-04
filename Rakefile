@@ -9,12 +9,14 @@ task :generate_test do
   template = File.read('test/test.html.erb')
   autolink = File.read('test/twitter-text-conformance/autolink.yml');
   extract  = File.read('test/twitter-text-conformance/extract.yml');
+  hit_highlighting = File.read('test/twitter-text-conformance/hit_highlighting.yml')
   
   class TestTemplate
     
-    def initialize(autolink_json, extract_json)
+    def initialize(autolink_json, extract_json, hit_highlighting_json)
       @autolink_json = autolink_json
       @extract_json = extract_json
+      @hit_highlighting_json = hit_highlighting_json
     end
     
     def get_binding
@@ -23,7 +25,7 @@ task :generate_test do
   end
   
   template = ERB.new(template)
-  t = TestTemplate.new(YAML.load(autolink).to_json, YAML.load(extract).to_json)
+  t = TestTemplate.new(YAML.load(autolink).to_json, YAML.load(extract).to_json, YAML.load(hit_highlighting).to_json)
   html = template.result(t.get_binding)
   File.open('test/test.html', 'w+') do |file|
     file.print(html)
